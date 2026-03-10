@@ -71,14 +71,47 @@
             
         }
     </style>
+    <style>
+    .container{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 40px;
+    }
+    </style>
+    <style>
+        .tablecontainer{
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 10px;
+            flex: 1
+        }
+    </style>
 </head>
-    <body style="background-color: whitesmoke;">
-        
+
+
+
+<body style="background-color: whitesmoke;">
         <div align="center">
-        <h1 class= "two" style="background-color: darkblue; color: white;">Upstate Weather</h1>
+            <h1 class= "two" style="background-color: darkblue; color: white;">Upstate Weather</h1>
         </div>
-        <div align="center">
-            <p class="three" style="text-align: justify; max-width: 800px; ">
+    <div class="container">
+        <div id="weather" align="left" style="background-color: white; border-width: 3px; border-color: black; border: solid">
+         <p><b>Current Conditions</b></p>
+            <img id="weather-icon" src="" alt="Weather Icon" style="display: none;"> <!-- Hidden until loaded -->
+            <p id="location">Loading...</p>
+            <p id="temperature">Temperature: --</p>
+            <p id="wind">Wind Speed: --</p>
+            <p id="humidity">Humidity: --</p>
+            <p id="description">Description: --</p>
+            <p id="timestamp">Last Updated: --</p>
+            <button onclick="fetchWeather()">Refresh</button>
+        </div>
+        <p id="error"></p>
+
+        <div>
+            <p class="three" style="text-align: justify; width: 800px; height: 400px">
                <b>Forecast Discussion<br> <i style="color: darkslategray">As of 9:45am, 3/10/2026</i> <br><br></b>
                 <span style="color: darkblue"><b>Record Warmth, Quick Cooldown</b></span>
 
@@ -95,23 +128,8 @@
             in the morning hours.
             </p>
         </div>
-        <div align="center">
-         <h1 class="two" style="background-color: steelblue">Current Conditions</h1>
-        </div>
-    
-
-
-    <div id="weather" style="background-color: white;">
-        <img id="weather-icon" src="" alt="Weather Icon" style="display: none;"> <!-- Hidden until loaded -->
-        <p id="location">Loading...</p>
-        <p id="temperature">Temperature: --</p>
-        <p id="wind">Wind Speed: --</p>
-        <p id="humidity">Humidity: --</p>
-        <p id="description">Description: --</p>
-        <p id="timestamp">Last Updated: --</p>
     </div>
-    <p id="error"></p>
-    <button onclick="fetchWeather()">Refresh</button>
+
 
     <script>
         async function fetchWeather() {
@@ -208,73 +226,71 @@
         setInterval(fetchWeather, 600000);
     </script>
     <div align="center">
-        <h1 class="two" style="background-color: steelblue;">Forecast</h1>
+        <h1 class="two" style="background-color: steelblue;">7-Day Forecast</h1>
     </div>
+<div class="tablecontainer">
+    <p style="width: 140px; text-align: center; vertical-align: top; background-color: white; border: 3px solid black; border-radius: 15px; padding: 3px">
+        <strong>Today<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FDay%2F01_Dry%2F03_Sct_Clouds.png&w=128&q=75" width="50">
+        <br><b>Few Sct Showers</b> <br>
+        High: <span style="color: #C00000;"><b>84°F</b></span></td>
+    </p>
+    <p style="width: 140px; text-align: center; vertical-align: top; background-color: white; border: 3px solid black; border-radius: 15px; padding: 3px">
+        <strong>Wednesday<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FDay%2F01_Dry%2F03_Sct_Clouds.png&w=128&q=75" width="50">
+        <br><b>Mostly Sunny</b><br>
+        High: <span style="color: #C00000;"><b>84°F</b></span>
+    </p>
+    <p style="width: 140px; text-align: center; vertical-align: top; background-color: white; border: 3px solid black; border-radius: 15px; padding: 3px">
+        <strong>Thursday<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FDay%2F02_Rain%2F04_Sct_Rain_AM.png&w=128&q=75" width="50">
+        <br><b>AM Rain <br> PM Clearing</b><br>
+        High: <span style="color: #C00000;"><b>61°F</b></span><b>↓</b></p>
+    <p style="width: 140px; text-align: center; vertical-align: top; background-color: white; border: 3px solid black; border-radius: 15px; padding: 3px">
+        <strong>Friday<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FDay%2F01_Dry%2F02_Few_Clouds.png&w=128&q=75" width="50">
+        <br><b>Mostly<br> Sunny</b><br>
+        High: <span style="color: #C00000;"><b>62°F</b></span></p>
+    <p style="width: 140px; text-align: center; vertical-align: top; background-color: white; border: 3px solid black; border-radius: 15px; padding: 3px">
+        <strong>Saturday<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FDay%2F01_Dry%2F02_Few_Clouds.png&w=128&q=75" width="50">
+        <br><b>Mostly <br>Sunny</b><br>
+        High: <span style="color: #C00000;"><b>74°F</b></span></p>
+    <p style="width: 140px; text-align: center; vertical-align: top; background-color: white; border: 3px solid black; border-radius: 15px; padding: 3px">
+        <strong>Sunday<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FDay%2F02_Rain%2F01_Sct_Rain_Light.png&w=256&q=75" width="50">
+        <br><b>Scattered Showers</b><br>
+        High: <span style="color: #C00000;"><b>70°F</b></span></p>
+    <p style="width: 140px; text-align: center; vertical-align: top; background-color: white; border: 3px solid black; border-radius: 15px; padding: 3px">
+        <strong>Monday<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FDay%2F02_Rain%2F04_Sct_Rain_AM.png&w=128&q=75" width="50">
+        <br><b>AM Showers <br> PM Clearing</b><br>
+        High: <span style="color: #C00000;"><b>60°F</b></span><b>↓</b></p>
 
-   
 
-
-<table align="center" style="width: 950px;">
-<tbody align="center"><tr>
-<td style="width: 140px; text-align: center; vertical-align: top; background-color: white; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Today<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FDay%2F01_Dry%2F03_Sct_Clouds.png&w=128&q=75" width="50">
-    <br><b>Few Sct Showers</b> <br>
-    High: <span style="color: #C00000;"><b>84°F</b></span></td>
-<td style="width: 140px; text-align: center; vertical-align: top; background-color: white; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Wednesday<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FDay%2F01_Dry%2F03_Sct_Clouds.png&w=128&q=75" width="50">
-    <br><b>Mostly<br> Sunny</b><br>
-    High: <span style="color: #C00000;"><b>84°F</b></span></td>
-<td style="width: 140px; text-align: center; vertical-align: top; background-color: white; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Thursday<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FDay%2F02_Rain%2F04_Sct_Rain_AM.png&w=128&q=75" width="50">
-    <br><b>AM Rain <br> PM Clearing</b><br>
-    High: <span style="color: #C00000;"><b>61°F</b></span><b>↓</b></td>
-<td style="width: 140px; text-align: center; vertical-align: top; background-color: white; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Friday<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FDay%2F01_Dry%2F02_Few_Clouds.png&w=128&q=75" width="50">
-    <br><b>Mostly<br> Sunny</b><br>
-    High: <span style="color: #C00000;"><b>62°F</b></span></td>
-<td style="width: 140px; text-align: center; vertical-align: top; background-color: white; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Saturday<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FDay%2F01_Dry%2F02_Few_Clouds.png&w=128&q=75" width="50">
-    <br><b>Mostly <br>Sunny</b><br>
-    High: <span style="color: #C00000;"><b>74°F</b></span></td>
-<td style="width: 140px; text-align: center; vertical-align: top; background-color: white; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Sunday<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FDay%2F02_Rain%2F01_Sct_Rain_Light.png&w=256&q=75" width="50">
-    <br><b>Scattered Showers</b><br>
-    High: <span style="color: #C00000;"><b>70°F</b></span></td>
-<td style="width: 140px; text-align: center; vertical-align: top; background-color: white; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Monday<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FDay%2F02_Rain%2F04_Sct_Rain_AM.png&w=128&q=75" width="50">
-    <br><b>AM Showers <br> PM Clearing</b><br>
-    High: <span style="color: #C00000;"><b>60°F</b></span><b>↓</b></td>
-<td style="width: 160px; text-align: center; vertical-align: top;">&nbsp;</td>
-</tr>
-
-<tr><td colspan="8">&nbsp;</td></tr>
-<tr>
-<td style="width: 160px; text-align: center; vertical-align: top; background-color: lightgrey; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Tonight<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FNight%2F01_Dry%2F03_Sct_Clouds.png&w=128&q=75" width="50">
+        </div>
+<div class="tablecontainer">
+<p style="width: 160px; text-align: center; vertical-align: top; background-color: lightgrey; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Tonight<br><br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FNight%2F01_Dry%2F03_Sct_Clouds.png&w=128&q=75" width="50">
     <br> <b>Mostly <br>Clear</b> <br>
-    Low: <span style="color: #0000CC;"><b>65°F</b></span></td>
-<td style="width: 140px; text-align: center; vertical-align: top; background-color: lightgrey; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Wednesday<br>Night<br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FNight%2F03_Lightning%2F01_Sct_Thundershower.png&w=128&q=75" width="50">
+    Low: <span style="color: #0000CC;"><b>65°F</b></span></p>
+<p style="width: 140px; text-align: center; vertical-align: top; background-color: lightgrey; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Wednesday<br>Night<br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FNight%2F03_Lightning%2F01_Sct_Thundershower.png&w=128&q=75" width="50">
     <br><b>Showers/Storms Near Daybreak</b> <br>
-    Low: <span style="color: #0000CC;"><b>61°F</b></span></td>
-<td style="width: 160px; text-align: center; vertical-align: top; background-color: lightgrey; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Thursday<br>Night<br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FNight%2F01_Dry%2F01_Clear.png&w=128&q=75" width="50">
+    Low: <span style="color: #0000CC;"><b>61°F</b></span></p>
+<p style="width: 160px; text-align: center; vertical-align: top; background-color: lightgrey; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Thursday<br>Night<br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FNight%2F01_Dry%2F01_Clear.png&w=128&q=75" width="50">
     <br><b>Clear</b><br>
-    Low: <span style="color: #0000CC;"><b>35°F</b></span></td>
-<td style="width: 160px; text-align: center; vertical-align: top; background-color: lightgrey; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Friday<br>Night<br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FNight%2F01_Dry%2F03_Sct_Clouds.png&w=128&q=75" width="50">
+    Low: <span style="color: #0000CC;"><b>35°F</b></span></p>
+<p style="width: 160px; text-align: center; vertical-align: top; background-color: lightgrey; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Friday<br>Night<br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FNight%2F01_Dry%2F03_Sct_Clouds.png&w=128&q=75" width="50">
     <br><b>Mostly <br> Clear</b><br>
-    Low: <span style="color: #0000CC;"><b>41°F</b></span></td>
-<td style="width: 160px; text-align: center; vertical-align: top; background-color: lightgrey; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Saturday<br>Night<br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FNight%2F01_Dry%2F03_Sct_Clouds.png&w=128&q=75" width="50">
+    Low: <span style="color: #0000CC;"><b>41°F</b></span></p>
+<p style="width: 160px; text-align: center; vertical-align: top; background-color: lightgrey; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Saturday<br>Night<br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FNight%2F01_Dry%2F03_Sct_Clouds.png&w=128&q=75" width="50">
     <br><b>Mostly <br> Clear</b> <br>
-    Low: <span style="color: #0000CC;"><b>48°F</b></span></td>
-<td style="width: 160px; text-align: center; vertical-align: top; background-color: lightgrey; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Sunday<br>Night<br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FNight%2F02_Rain%2F05_Sct_Rain_AM.png&w=256&q=75" width="50">
+    Low: <span style="color: #0000CC;"><b>48°F</b></span></p>
+<p style="width: 160px; text-align: center; vertical-align: top; background-color: lightgrey; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Sunday<br>Night<br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FNight%2F02_Rain%2F05_Sct_Rain_AM.png&w=256&q=75" width="50">
     <br><b>Showers Near Daybreak</b><br>
-    Low: <span style="color: #0000CC;"><b>58°F</b></span></td>
-<td style="width: 160px; text-align: center; vertical-align: top; background-color: lightgrey; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Monday<br>Night<br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FNight%2F01_Dry%2F01_Clear.png&w=256&q=75" width="50">
+    Low: <span style="color: #0000CC;"><b>58°F</b></span></p>
+<p style="width: 160px; text-align: center; vertical-align: top; background-color: lightgrey; border: 3px solid black; border-radius: 15px; padding: 3px"><strong>Monday<br>Night<br></strong><img src="https://raysweather.com/_next/image?url=%2Fforecast_icons%2FNight%2F01_Dry%2F01_Clear.png&w=256&q=75" width="50">
     <br><b>Clear & Chilly</b><br>
-    Low: <span style="color: #0000CC;"><b>31°F</b></span></td>
-<td style="width: 160px; text-align: center; vertical-align: top; ">&nbsp;</td>
-</tr>
-<tr>
+    Low: <span style="color: #0000CC;"><b>31°F</b></span></p>
+</div>
 
-<td style="width: 160px; text-align: center; vertical-align: top;">&nbsp;</td>
-</tr>
-</tbody></table>
-
-    <div class="center" algin="center" style="width: 1200px">
+    <div class="center" algin="center">
         <h2><b>Current Satellite & Radar</b></h2>
         <img src="https://cdn.star.nesdis.noaa.gov/GOES19/ABI/SECTOR/se/GEOCOLOR/GOES19-SE-GEOCOLOR-600x600.gif" alt="SE satellite" height="400" width="400" border="3">
         <img src="https://radar.weather.gov/ridge/standard/KGSP_loop.gif" width="400" height="400" border="3">
     </div>
-    <p style="color:darkblue"><i>Conditions via NOAA<br> Forecast Icons via Ray's Weather</i></p>
+<p style="color:darkblue"><i>Conditions via NOAA<br> Forecast Icons via Ray's Weather</i></p>
+</body>
 </html>
