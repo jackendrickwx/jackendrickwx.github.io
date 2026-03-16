@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radar &amp; Satellite — Upstate SC Weather</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .radar-page { max-width:1400px; margin:0 auto; padding:24px 20px; }
+    .radar-tabs { display:flex; gap:0; border-bottom:3px solid var(--sky-bright); margin-bottom:20px; }
+    .radar-tab {
+      font-family:'Barlow Condensed',sans-serif; font-weight:700;
+      font-size:0.9rem; letter-spacing:0.06em; text-transform:uppercase;
+      padding:10px 22px; cursor:pointer; border:none; background:var(--cloud-off);
+      color:var(--text-mid); border-radius:6px 6px 0 0; transition:all 0.15s;
+    }
+    .radar-tab.active { background:var(--sky-mid); color:#fff; }
+    .radar-tab:hover:not(.active) { background:var(--cloud-gray); }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+    .radar-full { width:100%; height:600px; border:none; border-radius:8px; display:block; }
+    .sat-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    @media(max-width:700px){ .sat-grid{grid-template-columns:1fr;} }
+    .sat-img-wrap { background:var(--card-bg); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+    .sat-img-wrap img { width:100%; height:auto; display:block; }
+    .sat-caption { padding:8px 14px; font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:0.8rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--sky-mid); }
+    .loops-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    @media(max-width:900px){ .loops-grid{grid-template-columns:1fr 1fr;} }
+    @media(max-width:580px){ .loops-grid{grid-template-columns:1fr;} }
+    .loop-panel { background:var(--card-bg); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+    .loop-panel img { width:100%; height:auto; display:block; }
+  </style>
+</head>
+<body data-base="./">
+<script src="js/shared.js"></script>
+
+<main class="radar-page">
+  <div class="section-title">📡 Radar &amp; Satellite</div>
+
+  <!-- TABS -->
+  <div class="radar-tabs">
+    <button class="radar-tab active" onclick="showTab('kgsp')">KGSP Radar</button>
+    <button class="radar-tab" onclick="showTab('regional')">Regional Radar</button>
+    <button class="radar-tab" onclick="showTab('satellite')">GOES-19 Satellite</button>
+    <button class="radar-tab" onclick="showTab('loops')">Loop Gallery</button>
+  </div>
+
+  <!-- KGSP Radar -->
+  <div class="tab-panel active" id="tab-kgsp">
+    <div class="radar-panel">
+      <div class="panel-header">
+        <span class="panel-title">KGSP — Greer, SC NEXRAD WSR-88D</span>
+        <span class="panel-badge">Dual-Pol · Updated every 4-6 min</span>
+      </div>
+      <iframe class="radar-full"
+        src="https://radar.weather.gov/station/KGSP/standard"
+        title="KGSP NEXRAD Radar" id="kgsp-radar" allowfullscreen></iframe>
+    </div>
+    <div style="margin-top:10px;font-size:0.82rem;color:var(--text-light);font-style:italic;">
+      Source: NOAA/NWS Radar Operations Center. KGSP is located at Greenville-Spartanburg International Airport, Greer SC.
+    </div>
+  </div>
+
+  <!-- Regional Radar -->
+  <div class="tab-panel" id="tab-regional">
+    <div class="radar-panel">
+      <div class="panel-header">
+        <span class="panel-title">Southeast Regional NEXRAD Composite</span>
+        <span class="panel-badge">NWS Multi-Radar Mosaic</span>
+      </div>
+      <iframe class="radar-full"
+        src="https://radar.weather.gov/region/southeast/standard"
+        title="Southeast Regional Radar" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- GOES-19 Satellite -->
+  <div class="tab-panel" id="tab-satellite">
+    <div style="margin-bottom:14px;font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;color:var(--text-light);letter-spacing:0.04em;">
+      All imagery from <strong>GOES-19 (GOES-East)</strong> operated by NOAA/NESDIS. Images auto-refresh every 10 minutes.
+    </div>
+    <div class="sat-grid">
+      <div class="sat-img-wrap">
+        <div class="sat-caption">🌈 GeoColor — Southeast Sector</div>
+        <img id="sat-geocolor-se" src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/se/GEOCOLOR/latest.jpg" alt="GOES-19 GeoColor Southeast">
+      </div>
+      <div class="sat-img-wrap">
+        <div class="sat-caption">☁ Visible — Southeast Sector</div>
+        <img id="sat-vis-se" src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/se/02/latest.jpg" alt="GOES-19 Visible">
+      </div>
+      <div class="sat-img-wrap">
+        <div class="sat-caption">🌡 Infrared (Ch 13) — Southeast</div>
+        <img id="sat-ir-se" src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/se/13/latest.jpg" alt="GOES-19 Infrared">
+      </div>
+      <div class="sat-img-wrap">
+        <div class="sat-caption">💧 Water Vapor — Southeast</div>
+        <img id="sat-wv-se" src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/se/09/latest.jpg" alt="GOES-19 Water Vapor">
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:0.8rem;color:var(--text-light);font-style:italic;">
+      GOES-19 imagery courtesy of NOAA/NESDIS Center for Satellite Applications and Research (STAR). Images update every 10 minutes.
+    </div>
+  </div>
+
+  <!-- Loop Gallery -->
+  <div class="tab-panel" id="tab-loops">
+    <div style="margin-bottom:14px;font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;color:var(--text-light);letter-spacing:0.04em;">
+      Animated loop products from NOAA. Click any image to open full-size.
+    </div>
+    <div class="loops-grid">
+      <div class="loop-panel">
+        <div class="sat-caption">KGSP Base Reflectivity</div>
+        <a href="https://radar.weather.gov/station/KGSP/standard" target="_blank">
+          <img src="https://radar.weather.gov/ridge/standard/KGSP_N0B_0.gif" alt="KGSP Loop"
+            onerror="this.style.display='none';this.nextSibling.style.display='block'">
+          <div style="display:none;padding:20px;text-align:center;color:var(--text-light);font-style:italic;">Click to view on NWS Radar site</div>
+        </a>
+      </div>
+      <div class="loop-panel">
+        <div class="sat-caption">GOES-19 GeoColor Loop — SE</div>
+        <a href="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/se/GEOCOLOR/" target="_blank">
+          <img src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/se/GEOCOLOR/latest.jpg" alt="GOES GeoColor">
+        </a>
+      </div>
+      <div class="loop-panel">
+        <div class="sat-caption">GOES-19 Water Vapor Loop</div>
+        <a href="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/se/09/" target="_blank">
+          <img src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/se/09/latest.jpg" alt="GOES Water Vapor">
+        </a>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="js/main.js"></script>
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.radar-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+id)?.classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Auto-refresh satellite images every 10 min
+setInterval(() => {
+  const ts = '?t=' + Date.now();
+  ['sat-geocolor-se','sat-vis-se','sat-ir-se','sat-wv-se'].forEach(id => {
+    const img = document.getElementById(id);
+    if (img) { const base = img.src.split('?')[0]; img.src = base + ts; }
+  });
+}, 600000);
+</script>
+</body>
+</html>

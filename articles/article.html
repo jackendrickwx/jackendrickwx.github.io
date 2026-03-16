@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article — Upstate SC Weather</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-base="../">
+<script src="../js/shared.js"></script>
+
+<main class="article-full">
+  <div id="article-not-found" style="display:none;color:var(--text-light);font-style:italic;padding:40px 0">Article not found.</div>
+
+  <div id="article-body">
+    <div class="article-tag" id="view-tag"></div>
+    <h1 id="view-title">Loading…</h1>
+    <div class="article-meta" id="view-meta"></div>
+    <div id="view-content"></div>
+
+    <div class="admin-only" style="display:none;margin-top:32px;padding-top:20px;border-top:2px solid var(--border);">
+      <button onclick="deleteThisArticle()" class="edit-btn danger">🗑 Delete Article</button>
+    </div>
+  </div>
+
+  <div style="margin-top:40px;padding-top:20px;border-top:2px solid var(--border);">
+    <a href="index.html" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;color:var(--sky-bright);text-decoration:none;letter-spacing:0.06em;text-transform:uppercase;">
+      ← Back to Articles
+    </a>
+  </div>
+</main>
+
+<script src="../js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+  if (!id) { showNotFound(); return; }
+
+  const article = Articles.get(id);
+  if (!article) { showNotFound(); return; }
+
+  document.title = `${article.title} — Upstate SC Weather`;
+  document.getElementById('view-tag').textContent = article.tag || 'Weather';
+  document.getElementById('view-title').textContent = article.title;
+  document.getElementById('view-meta').innerHTML =
+    `Published ${new Date(article.date).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}` +
+    (article.author ? ` · By ${article.author}` : '');
+  document.getElementById('view-content').innerHTML = article.content || '';
+});
+
+function showNotFound() {
+  document.getElementById('article-not-found').style.display = 'block';
+  document.getElementById('article-body').style.display = 'none';
+}
+
+function deleteThisArticle() {
+  const id = new URLSearchParams(location.search).get('id');
+  if (id && confirm('Delete this article?')) {
+    Articles.delete(id);
+    window.location.href = 'index.html';
+  }
+}
+</script>
+</body>
+</html>
