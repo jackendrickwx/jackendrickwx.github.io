@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Article — Upstate SC Weather</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .editor-wrap { max-width:860px; margin:0 auto; padding:24px 20px; }
+    .editor-field { margin-bottom:18px; }
+    .editor-field label {
+      font-family:'Barlow Condensed',sans-serif; font-weight:700;
+      font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase;
+      color:var(--sky-mid); display:block; margin-bottom:6px;
+    }
+    .editor-field input, .editor-field select, .editor-field textarea {
+      width:100%; padding:10px 14px; border:2px solid var(--border);
+      border-radius:6px; font-size:0.95rem; color:var(--text-dark);
+      font-family:'Lora',serif; background:#fff; transition:border-color 0.15s;
+    }
+    .editor-field input:focus, .editor-field textarea:focus {
+      outline:none; border-color:var(--sky-bright);
+    }
+    .editor-field textarea { min-height:300px; resize:vertical; line-height:1.7; }
+    .editor-toolbar {
+      display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px;
+      padding:8px 0; border-bottom:1px solid var(--border);
+    }
+    .tb-btn {
+      font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:0.78rem;
+      padding:4px 10px; border:1px solid var(--border); border-radius:3px;
+      background:var(--cloud-off); cursor:pointer; transition:all 0.15s;
+    }
+    .tb-btn:hover { background:var(--sky-mid); color:#fff; border-color:var(--sky-mid); }
+    .preview-area {
+      border:2px solid var(--border); border-radius:6px;
+      padding:20px 24px; background:#fff; min-height:200px;
+      font-size:0.95rem; line-height:1.8; color:var(--text-mid);
+      display:none;
+    }
+    .preview-area.active { display:block; }
+    .not-admin-msg {
+      text-align:center; padding:60px 20px;
+      font-family:'Barlow Condensed',sans-serif; font-size:1.3rem; color:var(--text-light);
+    }
+  </style>
+</head>
+<body data-base="../">
+<script src="../js/shared.js"></script>
+
+<div class="editor-wrap" id="editor-section" style="display:none">
+  <div class="section-title">✏ Write New Article</div>
+
+  <div class="editor-field">
+    <label>Article Title</label>
+    <input type="text" id="art-title" placeholder="e.g. Winter Storm Watch Issued for Cherokee County">
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+    <div class="editor-field">
+      <label>Category Tag</label>
+      <select id="art-tag">
+        <option value="Weather">Weather</option>
+        <option value="Severe Weather">Severe Weather</option>
+        <option value="Winter Weather">Winter Weather</option>
+        <option value="Tropical">Tropical</option>
+        <option value="Drought">Drought</option>
+        <option value="Climate">Climate</option>
+        <option value="Wildfire">Wildfire</option>
+        <option value="News">News</option>
+        <option value="Feature">Feature</option>
+      </select>
+    </div>
+    <div class="editor-field">
+      <label>Author / Byline</label>
+      <input type="text" id="art-author" placeholder="e.g. Upstate SC Weather Staff">
+    </div>
+  </div>
+
+  <div class="editor-field">
+    <label>Article Content</label>
+    <div class="editor-toolbar">
+      <button class="tb-btn" onclick="wrap('**','**')"><b>Bold</b></button>
+      <button class="tb-btn" onclick="wrap('*','*')"><i>Italic</i></button>
+      <button class="tb-btn" onclick="insertLine('## ')">H2</button>
+      <button class="tb-btn" onclick="insertLine('### ')">H3</button>
+      <button class="tb-btn" onclick="insertLine('- ')">List</button>
+      <button class="tb-btn" onclick="insertLine('> ')">Quote</button>
+      <button class="tb-btn" onclick="togglePreview()">👁 Preview</button>
+    </div>
+    <textarea id="art-content" placeholder="Write your article here. You can use Markdown formatting."></textarea>
+    <div class="preview-area" id="preview-area"></div>
+  </div>
+
+  <div style="display:flex;gap:12px;flex-wrap:wrap;">
+    <button onclick="saveArticle()" style="background:var(--sky-mid);color:#fff;border:none;padding:12px 28px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:0.06em;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='var(--sky-bright)'" onmouseout="this.style.background='var(--sky-mid)'">
+      💾 Publish Article
+    </button>
+    <a href="index.html" style="background:var(--cloud-off);color:var(--text-mid);border:2px solid var(--border);padding:10px 20px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.06em;text-decoration:none;display:inline-flex;align-items:center;">
+      ← Back to Articles
+    </a>
+  </div>
+</div>
+
+<div id="not-admin-msg" class="not-admin-msg">
+  🔒 Admin access required to write articles.<br>
+  <button onclick="document.getElementById('login-modal')?.classList.add('active')" style="margin-top:16px;background:var(--sky-mid);color:#fff;border:none;padding:10px 24px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer;">Login</button>
+</div>
+
+<script src="../js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  checkAdmin();
+});
+
+function checkAdmin() {
+  if (UW.state.isAdmin) {
+    document.getElementById('editor-section').style.display = 'block';
+    document.getElementById('not-admin-msg').style.display = 'none';
+  } else {
+    document.getElementById('editor-section').style.display = 'none';
+    document.getElementById('not-admin-msg').style.display = 'block';
+  }
+}
+
+// Re-check after login
+const origRenderAdminBar = UW.renderAdminBar.bind(UW);
+UW.renderAdminBar = function() {
+  origRenderAdminBar();
+  checkAdmin();
+};
+
+function wrap(before, after) {
+  const ta = document.getElementById('art-content');
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const sel = ta.value.substring(start, end);
+  ta.value = ta.value.substring(0,start) + before + sel + after + ta.value.substring(end);
+  ta.focus();
+}
+
+function insertLine(prefix) {
+  const ta = document.getElementById('art-content');
+  const pos = ta.selectionStart;
+  const lineStart = ta.value.lastIndexOf('\n', pos-1) + 1;
+  ta.value = ta.value.substring(0,lineStart) + prefix + ta.value.substring(lineStart);
+  ta.focus();
+}
+
+let previewOn = false;
+function togglePreview() {
+  const ta = document.getElementById('art-content');
+  const pre = document.getElementById('preview-area');
+  previewOn = !previewOn;
+  if (previewOn) {
+    pre.innerHTML = simpleMarkdown(ta.value);
+    pre.classList.add('active');
+    ta.style.display = 'none';
+  } else {
+    pre.classList.remove('active');
+    ta.style.display = '';
+  }
+}
+
+function simpleMarkdown(md) {
+  return md
+    .replace(/## (.+)/g, '<h2 style="font-family:\'Barlow Condensed\',sans-serif;font-weight:800;font-size:1.4rem;color:var(--sky-mid);margin:18px 0 8px">$1</h2>')
+    .replace(/### (.+)/g, '<h3 style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:1.1rem;color:var(--sky-mid);margin:14px 0 6px">$1</h3>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^> (.+)/gm, '<blockquote style="border-left:4px solid var(--sky-bright);padding:8px 16px;background:var(--cloud-off);margin:12px 0;font-style:italic">$1</blockquote>')
+    .replace(/^- (.+)/gm, '<li style="margin:4px 0">$1</li>')
+    .replace(/\n\n/g, '</p><p style="margin-bottom:16px">')
+    .replace(/^/, '<p style="margin-bottom:16px">')
+    .replace(/$/, '</p>');
+}
+
+function saveArticle() {
+  const title = document.getElementById('art-title').value.trim();
+  const tag = document.getElementById('art-tag').value;
+  const author = document.getElementById('art-author').value.trim();
+  const content = document.getElementById('art-content').value.trim();
+
+  if (!title || !content) { alert('Title and content are required.'); return; }
+
+  const id = Articles.create(title, tag, simpleMarkdown(content), author);
+  window.location.href = `article.html?id=${id}`;
+}
+</script>
+</body>
+</html>

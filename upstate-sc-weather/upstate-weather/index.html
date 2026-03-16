@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upstate SC Weather — Your Regional Forecast Authority</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .admin-panel { margin: 0 0 20px 0; }
+  </style>
+</head>
+<body data-base="./">
+
+<script src="js/shared.js"></script>
+
+<!-- HOME HERO -->
+<div class="home-hero">
+  <h1>☁ Upstate South Carolina Weather</h1>
+  <p>Live conditions · NWS alerts · Local forecasts for the Piedmont &amp; Blue Ridge</p>
+</div>
+
+<!-- ALERT BANNER -->
+<div id="alert-banner-home" style="max-width:1400px;margin:16px auto 0;padding:0 20px;"></div>
+
+<!-- ADMIN: MASTER TEMP PANEL -->
+<div style="max-width:1400px;margin:16px auto 0;padding:0 20px;" class="admin-only" id="home-admin-wrapper">
+  <div class="admin-panel active" id="home-admin-panel">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;color:#5a4000;margin-bottom:14px;letter-spacing:0.06em;">
+      🌡 MASTER TEMPERATURE CONTROL
+    </div>
+    <label>Greer Reference Temperature (°F) — all other cities auto-adjust by offset</label>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      <input type="number" id="greer-base-temp" placeholder="e.g. 62" style="width:100px;padding:8px 12px;border:1px solid #ffc107;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:1.1rem;background:#fffde7;">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;color:#795548;">Sets base. Individual overrides below.</span>
+    </div>
+
+    <label>Per-City Temperature Overrides (leave blank to use Greer-based auto)</label>
+    <div class="temp-grid" id="temp-override-grid">
+      <!-- filled by JS -->
+    </div>
+
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="save-btn" id="save-all-temps">💾 Save All Temperatures</button>
+      <button class="save-btn" style="background:#b71c1c;" id="clear-all-temps">🗑 Clear All Overrides</button>
+    </div>
+  </div>
+</div>
+
+<!-- CITY GRID -->
+<section class="city-grid-section">
+  <div class="section-title">Current Conditions by City</div>
+  <div class="city-grid" id="city-cards-container">
+    <!-- Rendered by JS -->
+    <div style="color:var(--text-light);font-style:italic">Loading city data…</div>
+  </div>
+</section>
+
+<!-- RADAR & SATELLITE -->
+<section class="radar-sat-section">
+  <div class="section-title">Live Radar &amp; Satellite</div>
+  <div class="radar-sat-grid">
+    <div class="radar-panel">
+      <div class="panel-header">
+        <span class="panel-title">📡 KGSP Radar</span>
+        <span class="panel-badge">NEXRAD WSR-88D · Greer SC</span>
+      </div>
+      <iframe class="radar-frame" id="kgsp-radar-home"
+        src="https://radar.weather.gov/station/KGSP/standard"
+        allowfullscreen title="KGSP NEXRAD Radar"></iframe>
+    </div>
+    <div class="radar-panel">
+      <div class="panel-header">
+        <span class="panel-title">🛰 GOES-19 Satellite</span>
+        <span class="panel-badge">NOAA GOES-East · Southeast Sector</span>
+      </div>
+      <img class="radar-frame-img" id="goes19-home"
+        src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/se/GEOCOLOR/latest.jpg"
+        alt="GOES-19 Southeast Sector"
+        onerror="this.src='https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/se/GEOCOLOR/600x600.jpg'">
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:12px;">
+    <a href="radar.html" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.06em;color:var(--sky-bright);text-decoration:none;text-transform:uppercase;">
+      → Full Radar &amp; Satellite Page
+    </a>
+  </div>
+</section>
+
+<!-- LATEST ARTICLES PREVIEW -->
+<section class="articles-section">
+  <div class="section-title">Latest Articles</div>
+  <div class="article-list" id="home-articles">
+    <div style="color:var(--text-light);font-style:italic">Loading articles…</div>
+  </div>
+  <div style="text-align:center;margin-top:20px;">
+    <a href="articles/index.html" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.06em;color:var(--sky-bright);text-decoration:none;text-transform:uppercase;">
+      → View All Articles
+    </a>
+  </div>
+</section>
+
+<script src="js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Render temp grid
+  const grid = document.getElementById('temp-override-grid');
+  if (grid) {
+    grid.innerHTML = Object.entries(UW.CITIES).map(([key, city]) => `
+      <div class="temp-input-block">
+        <label>${city.name} <span class="temp-offset">(${city.offset >= 0 ? '+' : ''}${city.offset}°)</span></label>
+        <div class="temp-input-row">
+          <input type="number" id="temp-${key}" placeholder="auto">
+        </div>
+      </div>`).join('');
+  }
+
+  // Home articles
+  setTimeout(() => {
+    const arts = document.getElementById('home-articles');
+    if (arts) Articles.renderList(arts);
+    if (!Articles.getAll().length) {
+      arts.innerHTML = '<p style="color:var(--text-light);font-style:italic">No articles yet. Check back soon!</p>';
+    }
+  }, 100);
+
+  // Init home admin
+  setTimeout(() => UW.initHomeAdmin(), 200);
+
+  // Clear overrides
+  document.getElementById('clear-all-temps')?.addEventListener('click', () => {
+    if (confirm('Clear all temperature overrides?')) {
+      UW.state.greerTemp = null;
+      UW.state.temps = {};
+      UW.saveState();
+      document.getElementById('greer-base-temp').value = '';
+      document.querySelectorAll('[id^="temp-"]').forEach(el => el.value = '');
+      UW.renderCityCards();
+    }
+  });
+
+  // Auto-refresh GOES image every 10 min
+  setInterval(() => {
+    const img = document.getElementById('goes19-home');
+    if (img) img.src = `https://cdn.star.nesdis.noaa.gov/GOES16/ABI/SECTOR/se/GEOCOLOR/latest.jpg?t=${Date.now()}`;
+  }, 600000);
+});
+</script>
+</body>
+</html>
